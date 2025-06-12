@@ -14,10 +14,11 @@ import {
 } from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { loadUserProfile } from '../../lib/storage'
+import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import authStyles from '../../styles/auth.styles'
 
 export default function HomeScreen() {
-  const [userProfile, setUserProfile] = useState<any>(null)
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [miniGoals, setMiniGoals] = useState<{
     id: string
     text: string
@@ -45,7 +46,9 @@ export default function HomeScreen() {
     return () => clearInterval(interval)
   }, [])
 
-  const calorieGoal = 2000
+  const calorieGoal = userProfile
+    ? calculateCalorieGoal(userProfile)
+    : 2000
   const caloriesEaten = 1200
   const fillPercent = (caloriesEaten / calorieGoal) * 100
 
