@@ -8,10 +8,16 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
-import { loadUserProfile, saveUserProfile } from '../../lib/storage'
+import { useRouter } from 'expo-router'
+import {
+  clearCredentials,
+  loadUserProfile,
+  saveUserProfile,
+} from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
 
 export default function ProfileScreen() {
+  const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
   const [editing, setEditing] = useState(false)
 
@@ -111,10 +117,20 @@ export default function ProfileScreen() {
             <Text style={authStyles.goalText}>Weight: {profile.weight}</Text>
             <Text style={authStyles.goalText}>Goal: {profile.goal}</Text>
 
-            <TouchableOpacity style={authStyles.button} onPress={() => setEditing(true)}>
-              <Text style={authStyles.buttonText}>Edit Profile</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={authStyles.button} onPress={() => setEditing(true)}>
+            <Text style={authStyles.buttonText}>Edit Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={authStyles.button}
+            onPress={async () => {
+              await clearCredentials()
+              Alert.alert('Signed Out')
+              router.replace('/(auth)')
+            }}
+          >
+            <Text style={authStyles.buttonText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
         )
       )}
     </ScrollView>
