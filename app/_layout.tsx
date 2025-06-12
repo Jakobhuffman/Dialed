@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { loadUserProfile } from '../lib/storage'
 
+type RootHref = '/(tabs)/home' | '/(auth)'
+
 export default function RootLayout() {
-  const [initialRoute, setInitialRoute] = useState<string | null>(null)
+  const [initialRoute, setInitialRoute] = useState<RootHref | null>(null)
 
   useEffect(() => {
     const checkUserStatus = async () => {
