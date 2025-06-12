@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { loadUserProfile } from '../lib/storage'
 
+// 1. Define the RootHref union type
+type RootHref = '/(tabs)/home' | '/(auth)'
+
 export default function RootLayout() {
-  const [initialRoute, setInitialRoute] = useState<string | null>(null)
+  // 2. Use RootHref type for initialRoute
+  const [initialRoute, setInitialRoute] = useState<RootHref | null>(null)
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -36,6 +40,7 @@ export default function RootLayout() {
   return (
     <>
       <Stack screenOptions={{ headerShown: false }} />
+      {/* 3. initialRoute is now guaranteed to be a valid RootHref */}
       <Redirect href={initialRoute} />
     </>
   )
