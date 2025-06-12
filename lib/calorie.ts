@@ -4,6 +4,7 @@ export type UserProfile = {
   height: string
   weight: string
   goal: string
+  activity?: string
 }
 
 /**
@@ -12,17 +13,28 @@ export type UserProfile = {
  */
 export const calculateCalorieGoal = (profile: UserProfile): number => {
   const age = parseFloat(profile.age)
-  const heightCm = parseFloat(profile.height) * 2.54
-  const weightKg = parseFloat(profile.weight) / 2.205
+  const heightIn = parseFloat(profile.height)
+  const weightLb = parseFloat(profile.weight)
 
-  // default to male formula if sex is not Male or Female
   const isFemale = profile.sex.toLowerCase() === 'female'
 
-  const bmr =
-    10 * weightKg + 6.25 * heightCm - 5 * age + (isFemale ? -161 : 5)
+  const bmr = isFemale
+    ? 655 + 4.35 * weightLb + 4.7 * heightIn - 4.7 * age
+    : 66 + 6.23 * weightLb + 12.7 * heightIn - 6.8 * age
 
-  // assume sedentary activity level
-  let daily = bmr * 1.2
+  const activityMultiplierMap: Record<string, number> = {
+    Sedentary: 1.2,
+    'Lightly Active': 1.375,
+    'Moderately Active': 1.55,
+    'Very Active': 1.725,
+    'Super Active': 1.9,
+  }
+
+  const multiplier = profile.activity
+    ? activityMultiplierMap[profile.activity] || 1.2
+    : 1.2
+
+  let daily = bmr * multiplier
 
   switch (profile.goal.toLowerCase()) {
     case 'lose':

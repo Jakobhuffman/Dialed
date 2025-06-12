@@ -28,6 +28,7 @@ export default function ProfileScreen() {
     height: '',
     weight: '',
     goal: '',
+    activity: '',
   })
 
   useEffect(() => {
@@ -98,6 +99,13 @@ export default function ProfileScreen() {
           />
           <TextInput
             style={authStyles.input}
+            value={form.activity}
+            placeholder="Activity Level"
+            placeholderTextColor="#aaa"
+            onChangeText={(text) => handleChange('activity', text)}
+          />
+          <TextInput
+            style={authStyles.input}
             value={form.goal}
             placeholder="Goal"
             placeholderTextColor="#aaa"
@@ -115,6 +123,7 @@ export default function ProfileScreen() {
             <Text style={authStyles.goalText}>Sex: {profile.sex}</Text>
             <Text style={authStyles.goalText}>Height: {profile.height}</Text>
             <Text style={authStyles.goalText}>Weight: {profile.weight}</Text>
+            <Text style={authStyles.goalText}>Activity: {profile.activity}</Text>
             <Text style={authStyles.goalText}>Goal: {profile.goal}</Text>
 
           <TouchableOpacity style={authStyles.button} onPress={() => setEditing(true)}>
