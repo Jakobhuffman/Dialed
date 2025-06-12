@@ -15,10 +15,11 @@ export default function UserProfile() {
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   const [goal, setGoal] = useState('Lose')
+  const [activity, setActivity] = useState('Sedentary')
 
   const handleSubmit = async () => {
-    console.log({ name, age, sex, height, weight, goal })
-    await saveUserProfile({ name, age, sex, height, weight, goal })
+    console.log({ name, age, sex, height, weight, goal, activity })
+    await saveUserProfile({ name, age, sex, height, weight, goal, activity })
     router.replace('/(tabs)/home')
   }
   return (
@@ -42,6 +43,21 @@ export default function UserProfile() {
           <Picker.Item label="Male" value="Male" />
           <Picker.Item label="Female" value="Female" />
           <Picker.Item label="Other" value="Other" />
+        </Picker>
+      </View>
+
+      <Text style={authStyles.label}>Activity Level</Text>
+      <View style={authStyles.pickerWrapper}>
+        <Picker
+          selectedValue={activity}
+          onValueChange={(itemValue) => setActivity(itemValue)}
+          style={authStyles.picker}
+        >
+          <Picker.Item label="Sedentary" value="Sedentary" />
+          <Picker.Item label="Lightly Active" value="Lightly Active" />
+          <Picker.Item label="Moderately Active" value="Moderately Active" />
+          <Picker.Item label="Very Active" value="Very Active" />
+          <Picker.Item label="Super Active" value="Super Active" />
         </Picker>
       </View>
 
