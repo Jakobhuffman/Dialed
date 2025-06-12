@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { saveCredentials } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'; // <-- import styles
 
 export default function LoginScreen() {
@@ -8,7 +9,8 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    await saveCredentials(username, password)
     router.replace('/(onboarding)/user_profile')
   }
 

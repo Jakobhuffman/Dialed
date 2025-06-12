@@ -109,7 +109,7 @@ export default function HomeScreen() {
         </AnimatedCircularProgress>
       </View>
 
-      <Text style={authStyles.miniGoalTitle}>Today's Goals</Text>
+      <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
 
       <FlatList
         data={miniGoals}
