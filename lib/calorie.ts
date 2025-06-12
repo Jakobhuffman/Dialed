@@ -12,17 +12,18 @@ export type UserProfile = {
  */
 export const calculateCalorieGoal = (profile: UserProfile): number => {
   const age = parseFloat(profile.age)
-  const heightCm = parseFloat(profile.height) * 2.54
-  const weightKg = parseFloat(profile.weight) / 2.205
+  const height = parseFloat(profile.height)
+  const weight = parseFloat(profile.weight)
 
-  // default to male formula if sex is not Male or Female
+  // determine basal metabolic rate using US measurements
   const isFemale = profile.sex.toLowerCase() === 'female'
+  const bmr = isFemale
+    ? 655 + 4.35 * weight + 4.7 * height - 4.7 * age
+    : 66 + 6.23 * weight + 12.7 * height - 6.8 * age
 
-  const bmr =
-    10 * weightKg + 6.25 * heightCm - 5 * age + (isFemale ? -161 : 5)
-
-  // assume sedentary activity level
-  let daily = bmr * 1.2
+  // currently assume a sedentary lifestyle
+  const activityMultiplier = 1.2
+  let daily = bmr * activityMultiplier
 
   switch (profile.goal.toLowerCase()) {
     case 'lose':
