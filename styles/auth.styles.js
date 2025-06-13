@@ -40,19 +40,19 @@ const authStyles = StyleSheet.create({
   label: {
     color: '#aaa',
     marginTop: 12,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   pickerWrapper: {
     backgroundColor: '#2C2C2C',
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 12,
     paddingHorizontal: 8,
-    height: 50,
+    height: 44,
     justifyContent: 'center',
     borderColor: '#39FF14', // optional: subtle neon border
   },
   picker: {
-    color: 'black',
+    color: 'white',
     height: '100%',
     width: '100%',
   },
