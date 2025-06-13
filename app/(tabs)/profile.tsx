@@ -8,6 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native'
+import { Picker } from '@react-native-picker/picker'
 import { useRouter } from 'expo-router'
 import {
   clearCredentials,
@@ -74,13 +75,19 @@ export default function ProfileScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleChange('age', text)}
           />
-          <TextInput
-            style={authStyles.input}
-            value={form.sex}
-            placeholder="Sex"
-            placeholderTextColor="#aaa"
-            onChangeText={(text) => handleChange('sex', text)}
-          />
+          <Text style={authStyles.label}>Sex</Text>
+          <View style={authStyles.pickerWrapper}>
+            <Picker
+              selectedValue={form.sex}
+              onValueChange={(val) => handleChange('sex', val)}
+              style={authStyles.picker}
+              dropdownIconColor="#39FF14"
+            >
+              <Picker.Item label="Male" value="Male" />
+              <Picker.Item label="Female" value="Female" />
+              <Picker.Item label="Other" value="Other" />
+            </Picker>
+          </View>
           <TextInput
             style={authStyles.input}
             value={form.height}
@@ -97,20 +104,34 @@ export default function ProfileScreen() {
             keyboardType="numeric"
             onChangeText={(text) => handleChange('weight', text)}
           />
-          <TextInput
-            style={authStyles.input}
-            value={form.activity}
-            placeholder="Activity Level"
-            placeholderTextColor="#aaa"
-            onChangeText={(text) => handleChange('activity', text)}
-          />
-          <TextInput
-            style={authStyles.input}
-            value={form.goal}
-            placeholder="Goal"
-            placeholderTextColor="#aaa"
-            onChangeText={(text) => handleChange('goal', text)}
-          />
+          <Text style={authStyles.label}>Activity Level</Text>
+          <View style={authStyles.pickerWrapper}>
+            <Picker
+              selectedValue={form.activity}
+              onValueChange={(val) => handleChange('activity', val)}
+              style={authStyles.picker}
+              dropdownIconColor="#39FF14"
+            >
+              <Picker.Item label="Sedentary" value="Sedentary" />
+              <Picker.Item label="Lightly Active" value="Lightly Active" />
+              <Picker.Item label="Moderately Active" value="Moderately Active" />
+              <Picker.Item label="Very Active" value="Very Active" />
+              <Picker.Item label="Super Active" value="Super Active" />
+            </Picker>
+          </View>
+          <Text style={authStyles.label}>Goal</Text>
+          <View style={authStyles.pickerWrapper}>
+            <Picker
+              selectedValue={form.goal}
+              onValueChange={(val) => handleChange('goal', val)}
+              style={authStyles.picker}
+              dropdownIconColor="#39FF14"
+            >
+              <Picker.Item label="Lose Weight" value="Lose" />
+              <Picker.Item label="Maintain Weight" value="Maintain" />
+              <Picker.Item label="Gain Weight" value="Gain" />
+            </Picker>
+          </View>
           <TouchableOpacity style={authStyles.button} onPress={handleSave}>
             <Text style={authStyles.buttonText}>Save</Text>
           </TouchableOpacity>
