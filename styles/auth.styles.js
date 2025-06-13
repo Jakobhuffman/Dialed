@@ -45,9 +45,9 @@ const authStyles = StyleSheet.create({
   pickerWrapper: {
     backgroundColor: '#2C2C2C',
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 12,
     paddingHorizontal: 8,
-    height: 50,
+    height: 40,
     justifyContent: 'center',
     borderColor: '#39FF14', // optional: subtle neon border
   },
@@ -96,12 +96,21 @@ const authStyles = StyleSheet.create({
   borderRadius: 16,
   padding: 20,
   marginBottom: 24,
+  marginTop: 16,
   alignItems: 'center',
   shadowColor: '#39FF14',
   shadowOpacity: 0.2,
   shadowOffset: { width: 0, height: 0 },
   shadowRadius: 8,
-},
+  },
+  goalBox: {
+    backgroundColor: '#262626',
+    borderRadius: 12,
+    padding: 12,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
 })
 
 export default authStyles
