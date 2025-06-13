@@ -1,6 +1,6 @@
 // app/(tabs)/home.tsx
 import DateTimePicker from '@react-native-community/datetimepicker'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
   Alert,
   Button,
@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import { useFocusEffect } from '@react-navigation/native'
 import { loadUserProfile } from '../../lib/storage'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import authStyles from '../../styles/auth.styles'
@@ -31,15 +32,17 @@ export default function HomeScreen() {
   const [deadline, setDeadline] = useState<Date | undefined>()
   const [showDatePicker, setShowDatePicker] = useState(false)
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const profile = await loadUserProfile()
-      if (profile) {
-        setUserProfile(profile)
+  useFocusEffect(
+    useCallback(() => {
+      const fetchProfile = async () => {
+        const profile = await loadUserProfile()
+        if (profile) {
+          setUserProfile(profile)
+        }
       }
-    }
-    fetchProfile()
-  }, [])
+      fetchProfile()
+    }, [])
+  )
 
   useEffect(() => {
     const interval = setInterval(checkDeadlines, 60000) // check every 60 sec
@@ -106,7 +109,7 @@ export default function HomeScreen() {
         >
           {() => (
             <Text style={authStyles.progressText}>
-              {caloriesEaten} / {calorieGoal} kcal
+              {caloriesEaten} / {calorieGoal} cal
             </Text>
           )}
         </AnimatedCircularProgress>
