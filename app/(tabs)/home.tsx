@@ -16,6 +16,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { useFocusEffect } from '@react-navigation/native'
 import { loadUserProfile } from '../../lib/storage'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
+import { getTodaysCalories } from '../../lib/food'
 import authStyles from '../../styles/auth.styles'
 
 export default function HomeScreen() {
@@ -31,6 +32,7 @@ export default function HomeScreen() {
   const [newGoalText, setNewGoalText] = useState('')
   const [deadline, setDeadline] = useState<Date | undefined>()
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const [caloriesEaten, setCaloriesEaten] = useState(0)
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +41,8 @@ export default function HomeScreen() {
         if (profile) {
           setUserProfile(profile)
         }
+        const eaten = await getTodaysCalories()
+        setCaloriesEaten(eaten)
       }
       fetchProfile()
     }, [])
@@ -52,7 +56,6 @@ export default function HomeScreen() {
   const calorieGoal = userProfile
     ? calculateCalorieGoal(userProfile)
     : 2000
-  const caloriesEaten = 0
   const fillPercent = (caloriesEaten / calorieGoal) * 100
 
   const toggleGoal = (id: string) => {
@@ -95,7 +98,9 @@ export default function HomeScreen() {
 
   return (
     <View style={authStyles.container}>
-      <Text style={authStyles.title}>Daily Calorie Goal</Text>
+      <View style={authStyles.goalBox}>
+        <Text style={authStyles.title}>Daily Calorie Goal</Text>
+      </View>
 
       <View style={authStyles.ringCard}>
         <AnimatedCircularProgress
