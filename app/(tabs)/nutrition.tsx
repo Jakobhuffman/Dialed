@@ -1,35 +1,32 @@
+import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 import {
   FlatList,
   Modal,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
-import { Picker } from '@react-native-picker/picker'
-import { loadUserProfile } from '../../lib/storage'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import {
   addFoodLog,
-  FoodLog,
-  getTodayFoodLogs,
   addQuickMeal,
+  FoodLog,
+  getQuickMeals,
+  getTodayFoodLogs,
 } from '../../lib/food'
+import { loadUserProfile } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
+
 
 export default function NutritionScreen() {
   const [goal, setGoal] = useState<number | null>(null)
   const [logs, setLogs] = useState<FoodLog[]>([])
-  const handleSaveQuickMeal = async (log: FoodLog) => {
-    await addQuickMeal({
-      name: log.name,
-      calories: log.calories,
-      servingSize: log.servingSize,
-      meal: log.meal,
-    })
-  }
+  const [quickMeals, setQuickMeals] = useState<FoodLog[]>([])
   const [showModal, setShowModal] = useState(false)
+
   const [form, setForm] = useState({
     name: '',
     calories: '',
@@ -37,17 +34,28 @@ export default function NutritionScreen() {
     meal: 'Breakfast',
   })
 
-  useEffect(() => {
-    const fetch = async () => {
-      const profile = await loadUserProfile()
-      if (profile) {
-        setGoal(calculateCalorieGoal(profile as UserProfile))
-      }
-      const todayLogs = await getTodayFoodLogs()
-      setLogs(todayLogs)
-    }
-    fetch()
-  }, [])
+  const handleSaveQuickMeal = async (log: FoodLog) => {
+    await addQuickMeal({
+      name: log.name,
+      calories: log.calories,
+      servingSize: log.servingSize,
+      meal: log.meal,
+    })
+    const updated = await getQuickMeals()
+    // Ensure each quick meal has id and time fields
+    setQuickMeals(
+      updated.map((item, idx) => ({
+        ...item,
+        id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
+        time: (item as any).time ?? new Date().toISOString(),
+      }))
+    )
+  }
+
+  const handleQuickLog = async (log: FoodLog) => {
+    const entry = await addFoodLog(log)
+    setLogs((prev) => [...prev, entry])
+  }
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -62,13 +70,32 @@ export default function NutritionScreen() {
       meal: form.meal,
     })
     setLogs((prev) => [...prev, entry])
-    setForm({ name: '', calories: '', servingSize: '', meal: 'Breakfast' })
     setShowModal(false)
   }
 
+  useEffect(() => {
+    const fetch = async () => {
+      const profile = await loadUserProfile()
+      if (profile) {
+        setGoal(calculateCalorieGoal(profile as UserProfile))
+      }
+      setLogs(await getTodayFoodLogs())
+      const quickMealsRaw = await getQuickMeals()
+      setQuickMeals(
+        quickMealsRaw.map((item, idx) => ({
+          ...item,
+          id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
+          time: (item as any).time ?? new Date().toISOString(),
+        }))
+      )
+    }
+    fetch()
+  }, [])
+
   return (
-    <View style={authStyles.container}>
+    <ScrollView contentContainerStyle={authStyles.container}>
       <Text style={authStyles.title}>Nutrition</Text>
+
       {goal ? (
         <View style={authStyles.goalBox}>
           <Text style={authStyles.goalText}>
@@ -85,6 +112,24 @@ export default function NutritionScreen() {
       >
         <Text style={authStyles.buttonText}>Log Food</Text>
       </TouchableOpacity>
+
+      {quickMeals.length > 0 && (
+        <View>
+          <Text style={authStyles.title}>Quick Meals</Text>
+          {quickMeals.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={authStyles.goalBox}
+              onPress={() => handleQuickLog(item)}
+            >
+              <Text style={authStyles.goalText}>
+                {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+              </Text>
+            </TouchableOpacity>
+          ))}
+          {/* Clear Quick Meals button removed because clearQuickMeals is not available */}
+        </View>
+      )}
 
       <FlatList
         data={logs}
@@ -107,7 +152,7 @@ export default function NutritionScreen() {
 
       <Modal visible={showModal} animationType="slide" transparent>
         <View style={[authStyles.container, { backgroundColor: '#000000cc' }]}>
-          <View style={authStyles.form}>
+          <ScrollView contentContainerStyle={authStyles.form}>
             <TextInput
               style={authStyles.input}
               placeholder="Food name"
@@ -153,9 +198,9 @@ export default function NutritionScreen() {
             >
               <Text style={authStyles.buttonText}>Cancel</Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   )
 }
