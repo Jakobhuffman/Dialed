@@ -37,7 +37,7 @@ export default function UserProfile() {
           selectedValue={sex}
           onValueChange={(itemValue) => setSex(itemValue)}
           style={authStyles.picker}
-          itemStyle={{ color: 'black' }} // 👈 fixes white-on-white issue
+          itemStyle={{ color: '#fff' }}
           dropdownIconColor="#39FF14"
         >
           <Picker.Item label="Male" value="Male" />

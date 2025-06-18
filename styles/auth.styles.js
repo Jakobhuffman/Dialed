@@ -51,20 +51,20 @@ const authStyles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 6,
   },
-pickerWrapper: {
-  width: '100%',
-  borderWidth: 1,
-  borderColor: '#39FF14',
-  borderRadius: 8,
-  backgroundColor: '#1a1a1a',
-  marginBottom: 12,
-},
-
-picker: {
-  height: 50,
-  width: '100%',
-  color: '#fff',
-},
+  pickerWrapper: {
+    backgroundColor: '#2C2C2C',
+    borderRadius: 8,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    height: 40,
+    justifyContent: 'center',
+    borderColor: '#39FF14',
+  },
+  picker: {
+    color: '#fff',
+    height: '100%',
+    width: '100%',
+  },
 
   button: {
     backgroundColor: '#39FF14',

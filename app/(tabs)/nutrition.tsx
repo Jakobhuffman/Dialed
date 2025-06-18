@@ -1,9 +1,13 @@
+import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 import {
   FlatList,
+  Modal,
+  ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import {
@@ -12,9 +16,11 @@ import {
   FoodLog,
   getQuickMeals,
   getTodayFoodLogs,
+  removeFoodLog,
 } from '../../lib/food'
 import { loadUserProfile } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
+
 
 export default function NutritionScreen() {
   const [goal, setGoal] = useState<number | null>(null)
@@ -30,8 +36,14 @@ export default function NutritionScreen() {
   })
 
   const handleSaveQuickMeal = async (log: FoodLog) => {
-    await addQuickMeal(log)
+    await addQuickMeal({
+      name: log.name,
+      calories: log.calories,
+      servingSize: log.servingSize,
+      meal: log.meal,
+    })
     const updated = await getQuickMeals()
+    // Ensure each quick meal has id and time fields
     setQuickMeals(
       updated.map((item, idx) => ({
         ...item,
@@ -44,6 +56,11 @@ export default function NutritionScreen() {
   const handleQuickLog = async (log: FoodLog) => {
     const entry = await addFoodLog(log)
     setLogs((prev) => [...prev, entry])
+  }
+
+  const handleDeleteLog = async (id: string) => {
+    await removeFoodLog(id)
+    setLogs((prev) => prev.filter((l) => l.id !== id))
   }
 
   const handleChange = (field: string, value: string) => {
@@ -65,10 +82,10 @@ export default function NutritionScreen() {
   useEffect(() => {
     const fetch = async () => {
       const profile = await loadUserProfile()
-      if (profile) setGoal(calculateCalorieGoal(profile as UserProfile))
-
+      if (profile) {
+        setGoal(calculateCalorieGoal(profile as UserProfile))
+      }
       setLogs(await getTodayFoodLogs())
-
       const quickMealsRaw = await getQuickMeals()
       setQuickMeals(
         quickMealsRaw.map((item, idx) => ({
@@ -82,64 +99,120 @@ export default function NutritionScreen() {
   }, [])
 
   return (
-    <FlatList
-      data={logs}
-      keyExtractor={(item) => item.id}
-      ListHeaderComponent={
-        <View style={authStyles.container}>
-          <Text style={authStyles.title}>Nutrition</Text>
+    <ScrollView contentContainerStyle={authStyles.container}>
+      <Text style={authStyles.title}>Nutrition</Text>
 
-          {goal ? (
-            <View style={authStyles.goalBox}>
-              <Text style={authStyles.goalText}>
-                Your daily calorie goal is {goal} kcal
-              </Text>
-            </View>
-          ) : (
-            <Text style={authStyles.goalText}>
-              Add your profile to see goals.
-            </Text>
-          )}
-
-          <TouchableOpacity
-            style={authStyles.button}
-            onPress={() => setShowModal(true)}
-          >
-            <Text style={authStyles.buttonText}>Log Food</Text>
-          </TouchableOpacity>
-
-          {quickMeals.length > 0 && (
-            <View>
-              <Text style={authStyles.title}>Quick Meals</Text>
-              {quickMeals.map((item) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={authStyles.goalBox}
-                  onPress={() => handleQuickLog(item)}
-                >
-                  <Text style={authStyles.goalText}>
-                    {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </View>
-      }
-      renderItem={({ item }) => (
+      {goal ? (
         <View style={authStyles.goalBox}>
           <Text style={authStyles.goalText}>
-            {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+            Your daily calorie goal is {goal} kcal
           </Text>
-          <TouchableOpacity
-            onPress={() => handleSaveQuickMeal(item)}
-            style={{ position: 'absolute', right: 8, top: 8 }}
-          >
-            <Text>✅</Text>
-          </TouchableOpacity>
+        </View>
+      ) : (
+        <Text style={authStyles.goalText}>Add your profile to see goals.</Text>
+      )}
+
+      <TouchableOpacity
+        style={authStyles.button}
+        onPress={() => setShowModal(true)}
+      >
+        <Text style={authStyles.buttonText}>Log Food</Text>
+      </TouchableOpacity>
+
+      {quickMeals.length > 0 && (
+        <View>
+          <Text style={authStyles.title}>Quick Meals</Text>
+          {quickMeals.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={authStyles.goalBox}
+              onPress={() => handleQuickLog(item)}
+            >
+              <Text style={authStyles.goalText}>
+                {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+              </Text>
+            </TouchableOpacity>
+          ))}
+          {/* Clear Quick Meals button removed because clearQuickMeals is not available */}
         </View>
       )}
-    >
-    </FlatList>
+
+      <FlatList
+        data={logs}
+        keyExtractor={(item) => item.id}
+        style={authStyles.list}
+        renderItem={({ item }) => (
+          <View style={authStyles.goalBox}>
+            <Text style={authStyles.goalText}>
+              {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+            </Text>
+            <TouchableOpacity
+              onPress={() => handleSaveQuickMeal(item)}
+              style={{ position: 'absolute', right: 40, top: 8 }}
+            >
+              <Text>✅</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleDeleteLog(item.id)}
+              style={{ position: 'absolute', right: 8, top: 8 }}
+            >
+              <Text>🗑️</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+
+      <Modal visible={showModal} animationType="slide" transparent>
+        <View style={[authStyles.container, { backgroundColor: '#000000cc' }]}>
+          <ScrollView contentContainerStyle={authStyles.form}>
+            <TextInput
+              style={authStyles.input}
+              placeholder="Food name"
+              placeholderTextColor="#aaa"
+              value={form.name}
+              onChangeText={(t) => handleChange('name', t)}
+            />
+            <TextInput
+              style={authStyles.input}
+              placeholder="Calories"
+              placeholderTextColor="#aaa"
+              keyboardType="numeric"
+              value={form.calories}
+              onChangeText={(t) => handleChange('calories', t)}
+            />
+            <TextInput
+              style={authStyles.input}
+              placeholder="Serving size"
+              placeholderTextColor="#aaa"
+              value={form.servingSize}
+              onChangeText={(t) => handleChange('servingSize', t)}
+            />
+            <Text style={authStyles.label}>Meal</Text>
+            <View style={authStyles.pickerWrapper}>
+              <Picker
+                selectedValue={form.meal}
+                onValueChange={(v) => handleChange('meal', v)}
+                style={authStyles.picker}
+                dropdownIconColor="#39FF14"
+              >
+                <Picker.Item label="Breakfast" value="Breakfast" />
+                <Picker.Item label="Lunch" value="Lunch" />
+                <Picker.Item label="Dinner" value="Dinner" />
+                <Picker.Item label="Snack" value="Snack" />
+              </Picker>
+            </View>
+            <TouchableOpacity style={authStyles.button} onPress={handleAdd}>
+              <Text style={authStyles.buttonText}>Add</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={authStyles.button}
+              onPress={() => setShowModal(false)}
+            >
+              <Text style={authStyles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
+    </ScrollView>
   )
 }
