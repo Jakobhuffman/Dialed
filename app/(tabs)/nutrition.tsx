@@ -80,7 +80,7 @@ export default function NutritionScreen() {
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id}
-        style={{ marginTop: 16, width: '100%' }}
+        style={authStyles.list}
         renderItem={({ item }) => (
           <Text style={authStyles.goalText}>
             {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})

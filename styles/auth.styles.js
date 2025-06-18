@@ -5,7 +5,7 @@ const authStyles = StyleSheet.create({
   container: {
     backgroundColor: '#1A1A1A', // dark grey
     padding: 24,
-    paddingTop: 48,
+    paddingTop: 64,
     flexGrow: 1,
     flex: 1,
     justifyContent: 'center',
@@ -22,10 +22,13 @@ const authStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#39FF14',
     marginBottom: 24,
+    marginTop: 12,
     textAlign: 'center',
   },
   form: {
-    width: '100%',
+    width: '90%',
+    maxWidth: 400,
+    alignSelf: 'center',
     backgroundColor: '#262626', // slightly lighter than container
     borderRadius: 12,
     padding: 20,
@@ -92,16 +95,12 @@ const authStyles = StyleSheet.create({
     color: '#999',
   },
   ringCard: {
-  backgroundColor: '#262626',
-  borderRadius: 16,
-  padding: 20,
-  marginBottom: 24,
-  marginTop: 16,
-  alignItems: 'center',
-  shadowColor: '#39FF14',
-  shadowOpacity: 0.2,
-  shadowOffset: { width: 0, height: 0 },
-  shadowRadius: 8,
+    backgroundColor: '#262626',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    marginTop: 16,
+    alignItems: 'center',
   },
   goalBox: {
     backgroundColor: '#262626',
@@ -110,6 +109,16 @@ const authStyles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     marginBottom: 16,
+  },
+  list: {
+    marginTop: 16,
+    width: '100%',
+  },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#1A1A1A',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 

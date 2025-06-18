@@ -2,6 +2,7 @@ import { Redirect, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { loadUserProfile } from '../lib/storage'
+import authStyles from '../styles/auth.styles'
 
 // 1. Define the RootHref union type
 type RootHref = '/(tabs)/home' | '/(auth)'
@@ -24,14 +25,7 @@ export default function RootLayout() {
 
   if (!initialRoute) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#1A1A1A',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <View style={authStyles.loadingContainer}>
         <ActivityIndicator size="large" color="#39FF14" />
       </View>
     )

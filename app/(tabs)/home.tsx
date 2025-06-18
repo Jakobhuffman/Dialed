@@ -109,6 +109,7 @@ export default function HomeScreen() {
           fill={fillPercent}
           tintColor="#39FF14"
           backgroundColor="#2C2C2C"
+          lineCap="round"
           rotation={0}
           duration={1000}
         >
