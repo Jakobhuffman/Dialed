@@ -109,6 +109,14 @@ const authStyles = StyleSheet.create({
     marginTop: 16,
     alignItems: 'center',
   },
+  sectionBox: {
+    backgroundColor: '#262626',
+    borderRadius: 16,
+    padding: 16,
+    marginVertical: 12,
+    width: '90%',
+    alignSelf: 'center',
+  },
   goalBox: {
   backgroundColor: '#2a2a2a',
   padding: 12,

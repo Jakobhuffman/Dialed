@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 import {
-  FlatList,
   Modal,
   ScrollView,
   Text,
@@ -101,60 +100,48 @@ export default function NutritionScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1A1A1A' }}>
-      <FlatList
-        data={logs}
-        keyExtractor={(item) => item.id}
-        style={authStyles.list}
-        contentContainerStyle={authStyles.scrollContainer}
-        ListHeaderComponent={
-          <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={authStyles.title}>Nutrition</Text>
+      <ScrollView contentContainerStyle={authStyles.scrollContainer}>
+        <Text style={authStyles.title}>Nutrition</Text>
 
-            {goal ? (
-              <View style={authStyles.goalBox}>
-                <Text style={authStyles.goalText}>
-                  Your daily calorie goal is {goal} kcal
-                </Text>
-              </View>
-            ) : (
-              <Text style={authStyles.goalText}>Add your profile to see goals.</Text>
-            )}
-
-            <TouchableOpacity
-              style={authStyles.button}
-              onPress={() => setShowModal(true)}
-            >
-              <Text style={authStyles.buttonText}>Log Food</Text>
-            </TouchableOpacity>
-
-            {quickMeals.length > 0 && (
-              <View style={{ width: '100%', alignItems: 'center' }}>
-                <Text style={authStyles.title}>Quick Meals</Text>
-                {quickMeals.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={authStyles.goalBox}
-                    onPress={() => handleQuickLog(item)}
-                  >
-                    <Text style={authStyles.goalText}>
-                      {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-        }
-        renderItem={({ item }) => (
+        {goal ? (
           <View style={authStyles.goalBox}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Text style={authStyles.goalText}>
+            <Text style={authStyles.goalText}>
+              Your daily calorie goal is {goal} kcal
+            </Text>
+          </View>
+        ) : (
+          <Text style={authStyles.goalText}>Add your profile to see goals.</Text>
+        )}
+
+        <TouchableOpacity
+          style={authStyles.button}
+          onPress={() => setShowModal(true)}
+        >
+          <Text style={authStyles.buttonText}>Log Food</Text>
+        </TouchableOpacity>
+
+        {quickMeals.length > 0 && (
+          <View style={authStyles.sectionBox}>
+            <Text style={[authStyles.title, { marginBottom: 12 }]}>Quick Meals</Text>
+            {quickMeals.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={{ marginVertical: 4 }}
+                onPress={() => handleQuickLog(item)}
+              >
+                <Text style={authStyles.goalText}>
+                  {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        <View style={authStyles.sectionBox}>
+          <Text style={[authStyles.title, { marginBottom: 12 }]}>History</Text>
+          {logs.map((item) => (
+            <View key={item.id} style={authStyles.goalBox}>
+              <Text style={[authStyles.goalText, { flex: 1, marginRight: 10 }]}>
                 {item.name} {item.calories} kcal ({item.servingSize})
               </Text>
               <View style={{ flexDirection: 'row', gap: 20 }}>
@@ -166,9 +153,9 @@ export default function NutritionScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        )}
-      />
+          ))}
+        </View>
+      </ScrollView>
 
       <Modal visible={showModal} animationType="slide" transparent>
         <View style={[authStyles.container, { backgroundColor: '#000000cc' }]}>
