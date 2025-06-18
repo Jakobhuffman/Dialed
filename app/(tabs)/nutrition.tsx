@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 import {
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import {
   addFoodLog,
@@ -147,21 +147,25 @@ export default function NutritionScreen() {
         }
         renderItem={({ item }) => (
           <View style={authStyles.goalBox}>
-            <Text style={authStyles.goalText}>
-              {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-            </Text>
-            <TouchableOpacity
-              onPress={() => handleSaveQuickMeal(item)}
-              style={{ position: 'absolute', right: 40, top: 8 }}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              <Ionicons name="save-outline" size={20} color="#39FF14" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleDeleteLog(item.id)}
-              style={{ position: 'absolute', right: 8, top: 8 }}
-            >
-              <Ionicons name="trash" size={20} color="#39FF14" />
-            </TouchableOpacity>
+              <Text style={authStyles.goalText}>
+                {item.name} {item.calories} cals. ({item.servingSize})
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 16 }}>
+                <TouchableOpacity onPress={() => handleSaveQuickMeal(item)}>
+                  <Ionicons name="save-outline" size={20} color="#39FF14" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDeleteLog(item.id)}>
+                  <Ionicons name="trash" size={20} color="#39FF14" />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         )}
       />
