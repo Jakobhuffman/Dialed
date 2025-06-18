@@ -59,8 +59,17 @@ export const addQuickMeal = async (
 ): Promise<void> => {
   const existing = await AsyncStorage.getItem(QUICK_KEY)
   const list: Omit<FoodLog, 'id' | 'time'>[] = existing ? JSON.parse(existing) : []
-  list.push(meal)
-  await AsyncStorage.setItem(QUICK_KEY, JSON.stringify(list))
+  const exists = list.some(
+    (m) =>
+      m.name === meal.name &&
+      m.calories === meal.calories &&
+      m.servingSize === meal.servingSize &&
+      m.meal === meal.meal
+  )
+  if (!exists) {
+    list.push(meal)
+    await AsyncStorage.setItem(QUICK_KEY, JSON.stringify(list))
+  }
 }
 
 export const getQuickMeals = async (): Promise<
