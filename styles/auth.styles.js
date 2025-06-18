@@ -51,20 +51,21 @@ const authStyles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 6,
   },
- pickerWrapper: {
+pickerWrapper: {
   width: '100%',
   borderWidth: 1,
   borderColor: '#39FF14',
   borderRadius: 8,
-  marginBottom: 12,
   backgroundColor: '#1a1a1a',
+  marginBottom: 12,
 },
 
 picker: {
-  color: '#fff',
   height: 50,
   width: '100%',
+  color: '#fff',
 },
+
   button: {
     backgroundColor: '#39FF14',
     borderRadius: 8,
