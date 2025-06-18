@@ -6,9 +6,15 @@ const authStyles = StyleSheet.create({
     backgroundColor: '#1A1A1A', // dark grey
     padding: 24,
     paddingTop: 64,
-    flexGrow: 1,
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scrollContainer: {
+    backgroundColor: '#1A1A1A',
+    padding: 24,
+    paddingTop: 64,
+    flexGrow: 1,
     alignItems: 'center',
   },
   image: {
