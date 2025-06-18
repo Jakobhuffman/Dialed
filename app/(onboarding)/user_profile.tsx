@@ -23,7 +23,7 @@ export default function UserProfile() {
     router.replace('/(tabs)/home')
   }
   return (
-    <ScrollView contentContainerStyle={authStyles.container}>
+    <ScrollView contentContainerStyle={authStyles.scrollContainer}>
       <Text style={authStyles.title}>Let’s Get to Know You</Text>
 
       <TextInput style={authStyles.input} placeholder="Name" placeholderTextColor="#aaa" value={name} onChangeText={setName} />

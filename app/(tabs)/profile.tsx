@@ -55,7 +55,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={authStyles.container}>
+    <ScrollView contentContainerStyle={authStyles.scrollContainer}>
       <Text style={authStyles.title}>Your Profile</Text>
 
       {editing ? (

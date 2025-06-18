@@ -42,3 +42,21 @@ export const getTodaysCalories = async (): Promise<number> => {
   const logs = await getTodayFoodLogs()
   return logs.reduce((sum, item) => sum + item.calories, 0)
 }
+
+const QUICK_KEY = 'quick-meals'
+
+export const addQuickMeal = async (
+  meal: Omit<FoodLog, 'id' | 'time'>
+): Promise<void> => {
+  const existing = await AsyncStorage.getItem(QUICK_KEY)
+  const list: Omit<FoodLog, 'id' | 'time'>[] = existing ? JSON.parse(existing) : []
+  list.push(meal)
+  await AsyncStorage.setItem(QUICK_KEY, JSON.stringify(list))
+}
+
+export const getQuickMeals = async (): Promise<
+  Omit<FoodLog, 'id' | 'time'>[]
+> => {
+  const json = await AsyncStorage.getItem(QUICK_KEY)
+  return json ? JSON.parse(json) : []
+}

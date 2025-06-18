@@ -14,12 +14,21 @@ import {
   addFoodLog,
   FoodLog,
   getTodayFoodLogs,
+  addQuickMeal,
 } from '../../lib/food'
 import authStyles from '../../styles/auth.styles'
 
 export default function NutritionScreen() {
   const [goal, setGoal] = useState<number | null>(null)
   const [logs, setLogs] = useState<FoodLog[]>([])
+  const handleSaveQuickMeal = async (log: FoodLog) => {
+    await addQuickMeal({
+      name: log.name,
+      calories: log.calories,
+      servingSize: log.servingSize,
+      meal: log.meal,
+    })
+  }
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({
     name: '',
@@ -82,9 +91,17 @@ export default function NutritionScreen() {
         keyExtractor={(item) => item.id}
         style={authStyles.list}
         renderItem={({ item }) => (
-          <Text style={authStyles.goalText}>
-            {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-          </Text>
+          <View style={authStyles.goalBox}>
+            <Text style={authStyles.goalText}>
+              {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+            </Text>
+            <TouchableOpacity
+              onPress={() => handleSaveQuickMeal(item)}
+              style={{ position: 'absolute', right: 8, top: 8 }}
+            >
+              <Text>✅</Text>
+            </TouchableOpacity>
+          </View>
         )}
       />
 
