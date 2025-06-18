@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import {
   addFoodLog,
@@ -99,48 +100,51 @@ export default function NutritionScreen() {
   }, [])
 
   return (
-    <ScrollView contentContainerStyle={authStyles.container}>
-      <Text style={authStyles.title}>Nutrition</Text>
-
-      {goal ? (
-        <View style={authStyles.goalBox}>
-          <Text style={authStyles.goalText}>
-            Your daily calorie goal is {goal} kcal
-          </Text>
-        </View>
-      ) : (
-        <Text style={authStyles.goalText}>Add your profile to see goals.</Text>
-      )}
-
-      <TouchableOpacity
-        style={authStyles.button}
-        onPress={() => setShowModal(true)}
-      >
-        <Text style={authStyles.buttonText}>Log Food</Text>
-      </TouchableOpacity>
-
-      {quickMeals.length > 0 && (
-        <View>
-          <Text style={authStyles.title}>Quick Meals</Text>
-          {quickMeals.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={authStyles.goalBox}
-              onPress={() => handleQuickLog(item)}
-            >
-              <Text style={authStyles.goalText}>
-                {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-              </Text>
-            </TouchableOpacity>
-          ))}
-          {/* Clear Quick Meals button removed because clearQuickMeals is not available */}
-        </View>
-      )}
-
+    <View style={{ flex: 1, backgroundColor: '#1A1A1A' }}>
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id}
         style={authStyles.list}
+        contentContainerStyle={authStyles.scrollContainer}
+        ListHeaderComponent={
+          <View style={{ width: '100%', alignItems: 'center' }}>
+            <Text style={authStyles.title}>Nutrition</Text>
+
+            {goal ? (
+              <View style={authStyles.goalBox}>
+                <Text style={authStyles.goalText}>
+                  Your daily calorie goal is {goal} kcal
+                </Text>
+              </View>
+            ) : (
+              <Text style={authStyles.goalText}>Add your profile to see goals.</Text>
+            )}
+
+            <TouchableOpacity
+              style={authStyles.button}
+              onPress={() => setShowModal(true)}
+            >
+              <Text style={authStyles.buttonText}>Log Food</Text>
+            </TouchableOpacity>
+
+            {quickMeals.length > 0 && (
+              <View style={{ width: '100%', alignItems: 'center' }}>
+                <Text style={authStyles.title}>Quick Meals</Text>
+                {quickMeals.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={authStyles.goalBox}
+                    onPress={() => handleQuickLog(item)}
+                  >
+                    <Text style={authStyles.goalText}>
+                      {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+        }
         renderItem={({ item }) => (
           <View style={authStyles.goalBox}>
             <Text style={authStyles.goalText}>
@@ -150,13 +154,13 @@ export default function NutritionScreen() {
               onPress={() => handleSaveQuickMeal(item)}
               style={{ position: 'absolute', right: 40, top: 8 }}
             >
-              <Text>✅</Text>
+              <Ionicons name="save-outline" size={20} color="#39FF14" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => handleDeleteLog(item.id)}
               style={{ position: 'absolute', right: 8, top: 8 }}
             >
-              <Text>🗑️</Text>
+              <Ionicons name="trash" size={20} color="#39FF14" />
             </TouchableOpacity>
           </View>
         )}
@@ -213,6 +217,6 @@ export default function NutritionScreen() {
           </ScrollView>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   )
 }
