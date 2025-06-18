@@ -155,9 +155,9 @@ export default function NutritionScreen() {
               }}
             >
               <Text style={authStyles.goalText}>
-                {item.name} {item.calories} cals. ({item.servingSize})
+                {item.name} {item.calories} kcal ({item.servingSize})
               </Text>
-              <View style={{ flexDirection: 'row', gap: 16 }}>
+              <View style={{ flexDirection: 'row', gap: 20 }}>
                 <TouchableOpacity onPress={() => handleSaveQuickMeal(item)}>
                   <Ionicons name="save-outline" size={20} color="#39FF14" />
                 </TouchableOpacity>
