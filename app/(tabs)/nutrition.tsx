@@ -16,6 +16,7 @@ import {
   FoodLog,
   getQuickMeals,
   getTodayFoodLogs,
+  removeQuickMeal,
   removeFoodLog,
 } from '../../lib/food'
 import { loadUserProfile } from '../../lib/storage'
@@ -79,6 +80,23 @@ export default function NutritionScreen() {
     setShowModal(false)
   }
 
+  const handleDeleteQuickMeal = async (meal: FoodLog) => {
+    await removeQuickMeal({
+      name: meal.name,
+      calories: meal.calories,
+      servingSize: meal.servingSize,
+      meal: meal.meal,
+    })
+    const updated = await getQuickMeals()
+    setQuickMeals(
+      updated.map((item, idx) => ({
+        ...item,
+        id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
+        time: (item as any).time ?? new Date().toISOString(),
+      }))
+    )
+  }
+
   useEffect(() => {
     const fetch = async () => {
       const profile = await loadUserProfile()
@@ -106,7 +124,7 @@ export default function NutritionScreen() {
         {goal ? (
           <View style={authStyles.goalBox}>
             <Text style={authStyles.goalText}>
-              Your daily calorie goal is {goal} kcal
+              Stay strong! Aim for {goal} kcal today.
             </Text>
           </View>
         ) : (
@@ -124,15 +142,19 @@ export default function NutritionScreen() {
           <View style={authStyles.sectionBox}>
             <Text style={[authStyles.title, { marginBottom: 12 }]}>Quick Meals</Text>
             {quickMeals.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={{ marginVertical: 4 }}
-                onPress={() => handleQuickLog(item)}
-              >
-                <Text style={authStyles.goalText}>
-                  {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
-                </Text>
-              </TouchableOpacity>
+              <View key={item.id} style={authStyles.goalBox}>
+                <TouchableOpacity
+                  style={{ flex: 1, marginRight: 10 }}
+                  onPress={() => handleQuickLog(item)}
+                >
+                  <Text style={authStyles.goalText}>
+                    {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDeleteQuickMeal(item)}>
+                  <Ionicons name="trash" size={20} color="#39FF14" />
+                </TouchableOpacity>
+              </View>
             ))}
           </View>
         )}
