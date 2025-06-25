@@ -78,3 +78,22 @@ export const getQuickMeals = async (): Promise<
   const json = await AsyncStorage.getItem(QUICK_KEY)
   return json ? JSON.parse(json) : []
 }
+
+export const removeQuickMeal = async (
+  meal: Omit<FoodLog, 'id' | 'time'>
+): Promise<void> => {
+  const existing = await AsyncStorage.getItem(QUICK_KEY)
+  if (!existing) return
+  const list: Omit<FoodLog, 'id' | 'time'>[] = JSON.parse(existing)
+  const index = list.findIndex(
+    (m) =>
+      m.name === meal.name &&
+      m.calories === meal.calories &&
+      m.servingSize === meal.servingSize &&
+      m.meal === meal.meal
+  )
+  if (index !== -1) {
+    list.splice(index, 1)
+    await AsyncStorage.setItem(QUICK_KEY, JSON.stringify(list))
+  }
+}
