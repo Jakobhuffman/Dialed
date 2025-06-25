@@ -101,6 +101,9 @@ const authStyles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: '#999',
   },
+  goalIcon: {
+    marginRight: 8,
+  },
   ringCard: {
     backgroundColor: '#262626',
     borderRadius: 16,
@@ -128,6 +131,20 @@ const authStyles = StyleSheet.create({
   justifyContent: 'space-between',
   alignItems: 'center',
 },
+  waterBox: {
+    backgroundColor: '#2a2a2a',
+    padding: 16,
+    marginVertical: 12,
+    borderRadius: 10,
+    width: '90%',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  waterText: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 8,
+  },
   list: {
     marginTop: 16,
     width: '100%',

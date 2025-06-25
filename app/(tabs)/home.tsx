@@ -7,11 +7,13 @@ import {
   FlatList,
   Modal,
   Platform,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { useFocusEffect } from '@react-navigation/native'
 import { loadUserProfile } from '../../lib/storage'
@@ -33,6 +35,7 @@ export default function HomeScreen() {
   const [deadline, setDeadline] = useState<Date | undefined>()
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [caloriesEaten, setCaloriesEaten] = useState(0)
+  const [waterCount, setWaterCount] = useState(0)
 
   useFocusEffect(
     useCallback(() => {
@@ -97,10 +100,11 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={authStyles.container}>
-      <View style={authStyles.goalBox}>
-        <Text style={authStyles.title}>Daily Calorie Goal</Text>
-      </View>
+    <View style={{ flex: 1, backgroundColor: '#1A1A1A' }}>
+      <ScrollView contentContainerStyle={authStyles.scrollContainer}>
+        <View style={authStyles.goalBox}>
+          <Text style={authStyles.title}>Daily Calorie Goal</Text>
+        </View>
 
       <View style={authStyles.ringCard}>
         <AnimatedCircularProgress
@@ -121,29 +125,55 @@ export default function HomeScreen() {
         </AnimatedCircularProgress>
       </View>
 
-      <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
+        <View style={authStyles.sectionBox}>
+          <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
 
-      <FlatList
-        data={miniGoals}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => toggleGoal(item.id)} style={authStyles.goalItem}>
-            <Text
-              style={[
-                authStyles.goalText,
-                item.done && authStyles.goalDone,
-                item.missed && { color: 'red' },
-              ]}
-            >
-              {item.done ? '✅' : item.missed ? '⏰' : '🔲'} {item.text}
-            </Text>
+          <FlatList
+            data={miniGoals}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => toggleGoal(item.id)} style={authStyles.goalItem}>
+                {item.done ? (
+                  <Ionicons name="checkmark" size={20} color="#39FF14" style={authStyles.goalIcon} />
+                ) : item.missed ? (
+                  <Ionicons name="alarm" size={20} color="#FF6347" style={authStyles.goalIcon} />
+                ) : (
+                  <Ionicons name="square-outline" size={20} color="white" style={authStyles.goalIcon} />
+                )}
+                <Text
+                  style={[
+                    authStyles.goalText,
+                    item.done && authStyles.goalDone,
+                    item.missed && { color: 'red' },
+                  ]}
+                >
+                  {item.text}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+
+          <TouchableOpacity style={authStyles.button} onPress={() => setShowAddGoal(true)}>
+            <Text style={authStyles.buttonText}>+ Add Goal</Text>
           </TouchableOpacity>
-        )}
-      />
+        </View>
 
-      <TouchableOpacity style={authStyles.button} onPress={() => setShowAddGoal(true)}>
-        <Text style={authStyles.buttonText}>+ Add Goal</Text>
-      </TouchableOpacity>
+        <View style={authStyles.waterBox}>
+          <Text style={authStyles.waterText}>Water Intake: {waterCount} glasses</Text>
+          <View style={{ flexDirection: 'row', gap: 20 }}>
+            <TouchableOpacity
+              style={authStyles.button}
+              onPress={() => setWaterCount((c) => Math.max(0, c - 1))}
+            >
+              <Text style={authStyles.buttonText}>-</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={authStyles.button} onPress={() => setWaterCount((c) => c + 1)}>
+              <Text style={authStyles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </ScrollView>
 
       <Modal visible={showAddGoal} animationType="slide" transparent>
         <View style={[authStyles.container, { backgroundColor: '#000000cc' }]}>
@@ -177,7 +207,7 @@ export default function HomeScreen() {
                 }}
               />
             )}
-            <Button title="Add Goal" color="#39FF14" onPress={addGoal} />
+            <Button title="Add Goal" color="#5cb85c" onPress={addGoal} />
             <Button title="Cancel" color="#666" onPress={() => setShowAddGoal(false)} />
           </View>
         </View>
