@@ -21,9 +21,13 @@ import {
 } from '../../lib/food'
 import { loadUserProfile } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
+import { useRouter, useLocalSearchParams } from 'expo-router'
 
 
 export default function NutritionScreen() {
+  const router = useRouter()
+  const params = useLocalSearchParams<{ scannedItem?: string }>()
+
   const [goal, setGoal] = useState<number | null>(null)
   const [logs, setLogs] = useState<FoodLog[]>([])
   const [quickMeals, setQuickMeals] = useState<FoodLog[]>([])
@@ -35,6 +39,21 @@ export default function NutritionScreen() {
     servingSize: '',
     meal: 'Breakfast',
   })
+
+  useEffect(() => {
+    if (params.scannedItem) {
+      try {
+        const item = JSON.parse(params.scannedItem as string)
+        setForm({
+          name: item.name,
+          calories: String(item.calories),
+          servingSize: item.servingSize,
+          meal: 'Breakfast',
+        })
+        setShowModal(true)
+      } catch {}
+    }
+  }, [params.scannedItem])
 
   const handleSaveQuickMeal = async (log: FoodLog) => {
     await addQuickMeal({
@@ -136,6 +155,12 @@ export default function NutritionScreen() {
           onPress={() => setShowModal(true)}
         >
           <Text style={authStyles.buttonText}>Log Food</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={authStyles.button}
+          onPress={() => router.push('/scanner')}
+        >
+          <Text style={authStyles.buttonText}>Scan Barcode</Text>
         </TouchableOpacity>
 
         {quickMeals.length > 0 && (

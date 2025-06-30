@@ -138,7 +138,7 @@ export default function ProfileScreen() {
         </View>
       ) : (
         profile && (
-          <View>
+          <View style={authStyles.sectionBox}>
             <Text style={authStyles.goalText}>Name: {profile.name}</Text>
             <Text style={authStyles.goalText}>Age: {profile.age}</Text>
             <Text style={authStyles.goalText}>Sex: {profile.sex}</Text>
