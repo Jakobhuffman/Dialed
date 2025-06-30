@@ -7,7 +7,6 @@ import {
   FlatList,
   Modal,
   Platform,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -101,79 +100,85 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#1A1A1A' }}>
-      <ScrollView contentContainerStyle={authStyles.scrollContainer}>
-        <View style={authStyles.goalBox}>
-          <Text style={authStyles.title}>Daily Calorie Goal</Text>
-        </View>
-
-      <View style={authStyles.ringCard}>
-        <AnimatedCircularProgress
-          size={200}
-          width={16}
-          fill={fillPercent}
-          tintColor="#39FF14"
-          backgroundColor="#2C2C2C"
-          lineCap="round"
-          rotation={0}
-          duration={1000}
-        >
-          {() => (
-            <Text style={authStyles.progressText}>
-              {caloriesEaten} / {calorieGoal} cal
-            </Text>
-          )}
-        </AnimatedCircularProgress>
-      </View>
-
-        <View style={authStyles.sectionBox}>
-          <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
-
-          <FlatList
-            data={miniGoals}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => toggleGoal(item.id)} style={authStyles.goalItem}>
-                {item.done ? (
-                  <Ionicons name="checkmark" size={20} color="#39FF14" style={authStyles.goalIcon} />
-                ) : item.missed ? (
-                  <Ionicons name="alarm" size={20} color="#FF6347" style={authStyles.goalIcon} />
-                ) : (
-                  <Ionicons name="square-outline" size={20} color="white" style={authStyles.goalIcon} />
-                )}
-                <Text
-                  style={[
-                    authStyles.goalText,
-                    item.done && authStyles.goalDone,
-                    item.missed && { color: 'red' },
-                  ]}
-                >
-                  {item.text}
-                </Text>
-              </TouchableOpacity>
+      <FlatList
+        data={miniGoals}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => toggleGoal(item.id)} style={authStyles.goalItem}>
+            {item.done ? (
+              <Ionicons name="checkmark" size={20} color="#39FF14" style={authStyles.goalIcon} />
+            ) : item.missed ? (
+              <Ionicons name="alarm" size={20} color="#FF6347" style={authStyles.goalIcon} />
+            ) : (
+              <Ionicons name="square-outline" size={20} color="white" style={authStyles.goalIcon} />
             )}
-          />
-
-          <TouchableOpacity style={authStyles.button} onPress={() => setShowAddGoal(true)}>
-            <Text style={authStyles.buttonText}>+ Add Goal</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={authStyles.waterBox}>
-          <Text style={authStyles.waterText}>Water Intake: {waterCount} glasses</Text>
-          <View style={{ flexDirection: 'row', gap: 20 }}>
-            <TouchableOpacity
-              style={authStyles.button}
-              onPress={() => setWaterCount((c) => Math.max(0, c - 1))}
+            <Text
+              style={[
+                authStyles.goalText,
+                item.done && authStyles.goalDone,
+                item.missed && { color: 'red' },
+              ]}
             >
-              <Text style={authStyles.buttonText}>-</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={authStyles.button} onPress={() => setWaterCount((c) => c + 1)}>
-              <Text style={authStyles.buttonText}>+</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              {item.text}
+            </Text>
+          </TouchableOpacity>
+        )}
+        ListHeaderComponent={
+          <>
+            <View style={[authStyles.goalBox, { justifyContent: 'center' }]}>
+              <Text style={authStyles.title}>Daily Calorie Goal</Text>
+            </View>
 
-      </ScrollView>
+            <View style={authStyles.ringCard}>
+              <AnimatedCircularProgress
+                size={200}
+                width={16}
+                fill={fillPercent}
+                tintColor="#39FF14"
+                backgroundColor="#2C2C2C"
+                lineCap="round"
+                rotation={0}
+                duration={1000}
+              >
+                {() => (
+                  <Text style={authStyles.progressText}>
+                    {caloriesEaten} / {calorieGoal} cal
+                  </Text>
+                )}
+              </AnimatedCircularProgress>
+            </View>
+
+            <View style={authStyles.sectionBox}>
+              <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
+            </View>
+          </>
+        }
+        ListFooterComponent={
+          <>
+            <View style={authStyles.sectionBox}>
+              <TouchableOpacity style={authStyles.button} onPress={() => setShowAddGoal(true)}>
+                <Text style={authStyles.buttonText}>+ Add Goal</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={authStyles.waterBox}>
+              <Text style={authStyles.waterText}>Water Intake: {waterCount} glasses</Text>
+              <View style={{ flexDirection: 'row', gap: 20 }}>
+                <TouchableOpacity
+                  style={authStyles.button}
+                  onPress={() => setWaterCount((c) => Math.max(0, c - 1))}
+                >
+                  <Text style={authStyles.buttonText}>-</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={authStyles.button} onPress={() => setWaterCount((c) => c + 1)}>
+                  <Text style={authStyles.buttonText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </>
+        }
+        contentContainerStyle={authStyles.scrollContainer}
+      />
 
       <Modal visible={showAddGoal} animationType="slide" transparent>
         <View style={[authStyles.container, { backgroundColor: '#000000cc' }]}>
