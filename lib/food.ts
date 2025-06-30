@@ -20,7 +20,7 @@ export const addFoodLog = async (
   log: Omit<FoodLog, 'id' | 'time'>
 ): Promise<FoodLog> => {
   const entry: FoodLog = {
-    id: Date.now().toString(),
+    id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`,
     time: new Date().toISOString(),
     ...log,
   }
@@ -58,7 +58,7 @@ export const addQuickMeal = async (
   meal: Omit<FoodLog, 'id' | 'time'>
 ): Promise<void> => {
   const existing = await AsyncStorage.getItem(QUICK_KEY)
-  const list: Omit<FoodLog, 'id' | 'time'>[] = existing ? JSON.parse(existing) : []
+  const list: FoodLog[] = existing ? JSON.parse(existing) : []
   const exists = list.some(
     (m) =>
       m.name === meal.name &&
@@ -67,24 +67,24 @@ export const addQuickMeal = async (
       m.meal === meal.meal
   )
   if (!exists) {
-    list.push(meal)
+    list.push({
+      id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`,
+      time: new Date().toISOString(),
+      ...meal,
+    })
     await AsyncStorage.setItem(QUICK_KEY, JSON.stringify(list))
   }
 }
 
-export const getQuickMeals = async (): Promise<
-  Omit<FoodLog, 'id' | 'time'>[]
-> => {
+export const getQuickMeals = async (): Promise<FoodLog[]> => {
   const json = await AsyncStorage.getItem(QUICK_KEY)
   return json ? JSON.parse(json) : []
 }
 
-export const removeQuickMeal = async (
-  meal: Omit<FoodLog, 'id' | 'time'>
-): Promise<void> => {
+export const removeQuickMeal = async (meal: FoodLog): Promise<void> => {
   const existing = await AsyncStorage.getItem(QUICK_KEY)
   if (!existing) return
-  const list: Omit<FoodLog, 'id' | 'time'>[] = JSON.parse(existing)
+  const list: FoodLog[] = JSON.parse(existing)
   const index = list.findIndex(
     (m) =>
       m.name === meal.name &&

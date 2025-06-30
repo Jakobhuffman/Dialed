@@ -5,10 +5,20 @@ import { useRouter } from 'expo-router'
 import authStyles from '../styles/auth.styles'
 import { fetchFoodByUPC } from '../lib/nutritionix'
 
-export default function ScannerScreen() {
+export default function Page() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [scanned, setScanned] = useState(false)
   const router = useRouter()
+
+  if (!BarCodeScanner) {
+    return (
+      <View style={authStyles.loadingContainer}>
+        <Text style={authStyles.goalText}>
+          Barcode scanner is not available on this platform.
+        </Text>
+      </View>
+    )
+  }
 
   useEffect(() => {
     const request = async () => {
