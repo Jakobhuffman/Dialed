@@ -7,7 +7,7 @@ export type Goal = {
 }
 
 export const createGoal = (text: string, deadline?: Date): Goal => ({
-  id: Date.now().toString(),
+  id: `${Date.now().toString()}-${Math.random().toString(36).slice(2, 8)}`,
   text,
   done: false,
   deadline,

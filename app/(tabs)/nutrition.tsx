@@ -63,14 +63,7 @@ export default function NutritionScreen() {
       meal: log.meal,
     })
     const updated = await getQuickMeals()
-    // Ensure each quick meal has id and time fields
-    setQuickMeals(
-      updated.map((item, idx) => ({
-        ...item,
-        id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
-        time: (item as any).time ?? new Date().toISOString(),
-      }))
-    )
+    setQuickMeals(updated)
   }
 
   const handleQuickLog = async (log: FoodLog) => {
@@ -100,20 +93,9 @@ export default function NutritionScreen() {
   }
 
   const handleDeleteQuickMeal = async (meal: FoodLog) => {
-    await removeQuickMeal({
-      name: meal.name,
-      calories: meal.calories,
-      servingSize: meal.servingSize,
-      meal: meal.meal,
-    })
+    await removeQuickMeal(meal)
     const updated = await getQuickMeals()
-    setQuickMeals(
-      updated.map((item, idx) => ({
-        ...item,
-        id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
-        time: (item as any).time ?? new Date().toISOString(),
-      }))
-    )
+    setQuickMeals(updated)
   }
 
   useEffect(() => {
@@ -124,13 +106,7 @@ export default function NutritionScreen() {
       }
       setLogs(await getTodayFoodLogs())
       const quickMealsRaw = await getQuickMeals()
-      setQuickMeals(
-        quickMealsRaw.map((item, idx) => ({
-          ...item,
-          id: (item as any).id ?? `quickmeal-${idx}-${item.name}`,
-          time: (item as any).time ?? new Date().toISOString(),
-        }))
-      )
+      setQuickMeals(quickMealsRaw)
     }
     fetch()
   }, [])
