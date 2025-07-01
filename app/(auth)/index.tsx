@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router'
 import React, { useState, useEffect } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
 import * as WebBrowser from 'expo-web-browser'
 import * as Google from 'expo-auth-session/providers/google'
 import { saveCredentials, saveToken } from '../../lib/storage'
@@ -56,11 +57,12 @@ export default function LoginScreen() {
             <Text style={authStyles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[authStyles.button, { marginTop: 10 }]}
+          style={authStyles.googleButton}
           disabled={!request}
           onPress={() => promptAsync()}
         >
-          <Text style={authStyles.buttonText}>Sign in with Google</Text>
+          <FontAwesome name="google" size={20} color="#000" />
+          <Text style={authStyles.googleButtonText}>Sign in with Google</Text>
         </TouchableOpacity>
 
       </View>

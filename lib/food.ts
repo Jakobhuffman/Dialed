@@ -6,6 +6,9 @@ export type FoodLog = {
   calories: number
   servingSize: string
   meal: string
+  protein?: number
+  carbs?: number
+  fat?: number
   time: string
 }
 
@@ -43,6 +46,11 @@ export const getTodaysCalories = async (): Promise<number> => {
   return logs.reduce((sum, item) => sum + item.calories, 0)
 }
 
+export const getTodaysProtein = async (): Promise<number> => {
+  const logs = await getTodayFoodLogs()
+  return logs.reduce((sum, item) => sum + (item.protein || 0), 0)
+}
+
 export const removeFoodLog = async (id: string): Promise<void> => {
   const key = getKeyForDate(new Date())
   const existing = await AsyncStorage.getItem(key)
@@ -64,7 +72,10 @@ export const addQuickMeal = async (
       m.name === meal.name &&
       m.calories === meal.calories &&
       m.servingSize === meal.servingSize &&
-      m.meal === meal.meal
+      m.meal === meal.meal &&
+      m.protein === meal.protein &&
+      m.carbs === meal.carbs &&
+      m.fat === meal.fat
   )
   if (!exists) {
     list.push({
@@ -90,7 +101,10 @@ export const removeQuickMeal = async (meal: FoodLog): Promise<void> => {
       m.name === meal.name &&
       m.calories === meal.calories &&
       m.servingSize === meal.servingSize &&
-      m.meal === meal.meal
+      m.meal === meal.meal &&
+      m.protein === meal.protein &&
+      m.carbs === meal.carbs &&
+      m.fat === meal.fat
   )
   if (index !== -1) {
     list.splice(index, 1)

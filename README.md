@@ -60,3 +60,9 @@ npx expo run:ios # or expo run:android
 ```
 
 After building, start the app with `npx expo start --dev-client`.
+
+### Nutritionix API
+
+Scanning a barcode will query the Nutritionix API for calorie and macro data.
+Set `NUTRITIONIX_APP_ID` and `NUTRITIONIX_APP_KEY` in your environment before
+running the app.

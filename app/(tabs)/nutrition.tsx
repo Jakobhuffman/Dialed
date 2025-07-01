@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
+import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { Picker } from '@react-native-picker/picker'
 import React, { useEffect, useState } from 'react'
 import {
@@ -29,6 +30,8 @@ export default function NutritionScreen() {
   const params = useLocalSearchParams<{ scannedItem?: string }>()
 
   const [goal, setGoal] = useState<number | null>(null)
+  const [proteinGoal, setProteinGoal] = useState<number | null>(null)
+  const [proteinEaten, setProteinEaten] = useState(0)
   const [logs, setLogs] = useState<FoodLog[]>([])
   const [quickMeals, setQuickMeals] = useState<FoodLog[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -37,6 +40,9 @@ export default function NutritionScreen() {
     name: '',
     calories: '',
     servingSize: '',
+    protein: '',
+    carbs: '',
+    fat: '',
     meal: 'Breakfast',
   })
 
@@ -48,6 +54,9 @@ export default function NutritionScreen() {
           name: item.name,
           calories: String(item.calories),
           servingSize: item.servingSize,
+          protein: String(item.protein ?? ''),
+          carbs: String(item.carbs ?? ''),
+          fat: String(item.fat ?? ''),
           meal: 'Breakfast',
         })
         setShowModal(true)
@@ -60,6 +69,9 @@ export default function NutritionScreen() {
       name: log.name,
       calories: log.calories,
       servingSize: log.servingSize,
+      protein: log.protein,
+      carbs: log.carbs,
+      fat: log.fat,
       meal: log.meal,
     })
     const updated = await getQuickMeals()
@@ -69,11 +81,19 @@ export default function NutritionScreen() {
   const handleQuickLog = async (log: FoodLog) => {
     const entry = await addFoodLog(log)
     setLogs((prev) => [...prev, entry])
+    setProteinEaten((prev) => prev + (entry.protein ?? 0))
   }
 
   const handleDeleteLog = async (id: string) => {
     await removeFoodLog(id)
-    setLogs((prev) => prev.filter((l) => l.id !== id))
+    setLogs((prev) => {
+      const updated = prev.filter((l) => l.id !== id)
+      const removed = prev.find((l) => l.id === id)
+      if (removed) {
+        setProteinEaten((p) => p - (removed.protein ?? 0))
+      }
+      return updated
+    })
   }
 
   const handleChange = (field: string, value: string) => {
@@ -86,9 +106,13 @@ export default function NutritionScreen() {
       name: form.name,
       calories: parseFloat(form.calories),
       servingSize: form.servingSize,
+      protein: parseFloat(form.protein) || 0,
+      carbs: parseFloat(form.carbs) || 0,
+      fat: parseFloat(form.fat) || 0,
       meal: form.meal,
     })
     setLogs((prev) => [...prev, entry])
+    setProteinEaten((prev) => prev + (entry.protein ?? 0))
     setShowModal(false)
   }
 
@@ -103,18 +127,48 @@ export default function NutritionScreen() {
       const profile = await loadUserProfile()
       if (profile) {
         setGoal(calculateCalorieGoal(profile as UserProfile))
+        setProteinGoal(calculateProteinGoal(profile as UserProfile))
       }
-      setLogs(await getTodayFoodLogs())
+      const todays = await getTodayFoodLogs()
+      setLogs(todays)
+      setProteinEaten(
+        todays.reduce((sum, l) => sum + (l.protein ?? 0), 0)
+      )
       const quickMealsRaw = await getQuickMeals()
       setQuickMeals(quickMealsRaw)
     }
     fetch()
   }, [])
 
+  const proteinFill = proteinGoal
+    ? Math.min((proteinEaten / proteinGoal) * 100, 100)
+    : 0
+
   return (
     <View style={{ flex: 1, backgroundColor: '#1A1A1A' }}>
       <ScrollView contentContainerStyle={authStyles.scrollContainer}>
         <Text style={authStyles.title}>Nutrition</Text>
+
+        {proteinGoal !== null && (
+          <View style={authStyles.ringCard}>
+            <AnimatedCircularProgress
+              size={200}
+              width={16}
+              fill={proteinFill}
+              tintColor="#c71585"
+              backgroundColor="#2C2C2C"
+              lineCap="round"
+              rotation={0}
+              duration={1000}
+            >
+              {() => (
+                <Text style={authStyles.progressText}>
+                  {proteinEaten} / {proteinGoal} g
+                </Text>
+              )}
+            </AnimatedCircularProgress>
+          </View>
+        )}
 
         {goal ? (
           <View style={authStyles.goalBox}>
@@ -149,7 +203,7 @@ export default function NutritionScreen() {
                   onPress={() => handleQuickLog(item)}
                 >
                   <Text style={authStyles.goalText}>
-                    {item.meal}: {item.name} - {item.calories} cal ({item.servingSize})
+                    {item.meal}: {item.name} - {item.calories} cal ({item.servingSize}) P:{item.protein ?? 0}g C:{item.carbs ?? 0}g F:{item.fat ?? 0}g
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleDeleteQuickMeal(item)}>
@@ -165,7 +219,7 @@ export default function NutritionScreen() {
           {logs.map((item) => (
             <View key={item.id} style={authStyles.goalBox}>
               <Text style={[authStyles.goalText, { flex: 1, marginRight: 10 }]}>
-                {item.name} {item.calories} kcal ({item.servingSize})
+                {item.name} {item.calories} kcal ({item.servingSize}) P:{item.protein ?? 0}g C:{item.carbs ?? 0}g F:{item.fat ?? 0}g
               </Text>
               <View style={{ flexDirection: 'row', gap: 20 }}>
                 <TouchableOpacity onPress={() => handleSaveQuickMeal(item)}>
@@ -204,6 +258,30 @@ export default function NutritionScreen() {
               placeholderTextColor="#aaa"
               value={form.servingSize}
               onChangeText={(t) => handleChange('servingSize', t)}
+            />
+            <TextInput
+              style={authStyles.input}
+              placeholder="Protein (g)"
+              placeholderTextColor="#aaa"
+              keyboardType="numeric"
+              value={form.protein}
+              onChangeText={(t) => handleChange('protein', t)}
+            />
+            <TextInput
+              style={authStyles.input}
+              placeholder="Carbs (g)"
+              placeholderTextColor="#aaa"
+              keyboardType="numeric"
+              value={form.carbs}
+              onChangeText={(t) => handleChange('carbs', t)}
+            />
+            <TextInput
+              style={authStyles.input}
+              placeholder="Fat (g)"
+              placeholderTextColor="#aaa"
+              keyboardType="numeric"
+              value={form.fat}
+              onChangeText={(t) => handleChange('fat', t)}
             />
             <Text style={authStyles.label}>Meal</Text>
             <View style={authStyles.pickerWrapper}>
