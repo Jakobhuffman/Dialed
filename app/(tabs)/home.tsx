@@ -58,7 +58,9 @@ export default function HomeScreen() {
   const calorieGoal = userProfile
     ? calculateCalorieGoal(userProfile)
     : 2000
-  const fillPercent = (caloriesEaten / calorieGoal) * 100
+  const fillPercent = calorieGoal
+    ? Math.min(100, (caloriesEaten / calorieGoal) * 100)
+    : 0
 
   const toggleGoal = (id: string) => {
     setMiniGoals((goals) =>

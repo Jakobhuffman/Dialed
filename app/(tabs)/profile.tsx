@@ -14,6 +14,7 @@ import {
   clearCredentials,
   loadUserProfile,
   saveUserProfile,
+  clearAllData,
 } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
 
@@ -159,6 +160,16 @@ export default function ProfileScreen() {
             }}
           >
             <Text style={authStyles.buttonText}>Sign Out</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={authStyles.button}
+            onPress={async () => {
+              await clearAllData()
+              Alert.alert('Data Cleared')
+              router.replace('/(auth)')
+            }}
+          >
+            <Text style={authStyles.buttonText}>Reset App</Text>
           </TouchableOpacity>
         </View>
         )
