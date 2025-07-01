@@ -2,6 +2,9 @@ export type NutritionixItem = {
   name: string
   calories: number
   servingSize: string
+  protein: number
+  carbs: number
+  fat: number
 }
 
 export const fetchFoodByUPC = async (upc: string): Promise<NutritionixItem> => {
@@ -20,5 +23,8 @@ export const fetchFoodByUPC = async (upc: string): Promise<NutritionixItem> => {
     name: food?.food_name ?? 'Unknown',
     calories: food?.nf_calories ?? 0,
     servingSize: `${food?.serving_qty ?? ''} ${food?.serving_unit ?? ''}`,
+    protein: food?.nf_protein ?? 0,
+    carbs: food?.nf_total_carbohydrate ?? 0,
+    fat: food?.nf_total_fat ?? 0,
   }
 }

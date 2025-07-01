@@ -32,18 +32,19 @@ const authStyles = StyleSheet.create({
     textAlign: 'center',
   },
   form: {
-    width: '90%',
-    maxWidth: 400,
+    width: '95%',
+    maxWidth: 500,
     alignSelf: 'center',
     backgroundColor: '#262626', // slightly lighter than container
     borderRadius: 12,
-    padding: 20,
+    padding: 24,
   },
   input: {
     backgroundColor: '#2C2C2C',
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
+    fontSize: 16,
     color: 'white',
   },
   label: {
@@ -76,6 +77,20 @@ const authStyles = StyleSheet.create({
     textAlign: 'center',
     padding: 12,
     fontWeight: 'bold',
+  },
+  googleButton: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  googleButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
     progressText: {
     color: 'white',

@@ -11,7 +11,6 @@ import {
 import { Picker } from '@react-native-picker/picker'
 import { useRouter } from 'expo-router'
 import {
-  clearCredentials,
   loadUserProfile,
   saveUserProfile,
   clearAllData,
@@ -154,22 +153,12 @@ export default function ProfileScreen() {
           <TouchableOpacity
             style={authStyles.button}
             onPress={async () => {
-              await clearCredentials()
+              await clearAllData()
               Alert.alert('Signed Out')
               router.replace('/(auth)')
             }}
           >
             <Text style={authStyles.buttonText}>Sign Out</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={authStyles.button}
-            onPress={async () => {
-              await clearAllData()
-              Alert.alert('Data Cleared')
-              router.replace('/(auth)')
-            }}
-          >
-            <Text style={authStyles.buttonText}>Reset App</Text>
           </TouchableOpacity>
         </View>
         )
