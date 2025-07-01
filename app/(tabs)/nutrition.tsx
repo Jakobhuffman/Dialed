@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'
-import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { Picker } from '@react-native-picker/picker'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import {
   Modal,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
 import {
   addFoodLog,
@@ -17,12 +18,11 @@ import {
   FoodLog,
   getQuickMeals,
   getTodayFoodLogs,
-  removeQuickMeal,
   removeFoodLog,
+  removeQuickMeal,
 } from '../../lib/food'
 import { loadUserProfile } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
-import { useRouter, useLocalSearchParams } from 'expo-router'
 
 
 export default function NutritionScreen() {
@@ -312,3 +312,7 @@ export default function NutritionScreen() {
     </View>
   )
 }
+function calculateProteinGoal(arg0: UserProfile): React.SetStateAction<number | null> {
+  throw new Error('Function not implemented.')
+}
+
