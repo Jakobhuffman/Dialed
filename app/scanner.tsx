@@ -10,16 +10,6 @@ export default function Page() {
   const [scanned, setScanned] = useState(false)
   const router = useRouter()
 
-  if (!BarCodeScanner) {
-    return (
-      <View style={authStyles.loadingContainer}>
-        <Text style={authStyles.goalText}>
-          Barcode scanner is not available on this platform.
-        </Text>
-      </View>
-    )
-  }
-
   useEffect(() => {
     const request = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync()
@@ -40,6 +30,16 @@ export default function Page() {
       Alert.alert('Error', 'Failed to fetch item data')
       router.back()
     }
+  }
+
+  if (!BarCodeScanner) {
+    return (
+      <View style={authStyles.loadingContainer}>
+        <Text style={authStyles.goalText}>
+          Barcode scanner is not available on this platform.
+        </Text>
+      </View>
+    )
   }
 
   if (hasPermission === null) {
