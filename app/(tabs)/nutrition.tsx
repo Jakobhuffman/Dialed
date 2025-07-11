@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import { Picker } from '@react-native-picker/picker'
+import Dropdown from '../../components/Dropdown'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import {
@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
-import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
+import { calculateCalorieGoal, calculateProteinGoal, UserProfile } from '../../lib/calorie'
 import {
   addFoodLog,
   addQuickMeal,
@@ -283,20 +283,12 @@ export default function NutritionScreen() {
               value={form.fat}
               onChangeText={(t) => handleChange('fat', t)}
             />
-            <Text style={authStyles.label}>Meal</Text>
-            <View style={authStyles.pickerWrapper}>
-              <Picker
-                selectedValue={form.meal}
-                onValueChange={(v) => handleChange('meal', v)}
-                style={authStyles.picker}
-                dropdownIconColor="#39FF14"
-              >
-                <Picker.Item label="Breakfast" value="Breakfast" />
-                <Picker.Item label="Lunch" value="Lunch" />
-                <Picker.Item label="Dinner" value="Dinner" />
-                <Picker.Item label="Snack" value="Snack" />
-              </Picker>
-            </View>
+            <Dropdown
+              label="Meal"
+              options={['Breakfast', 'Lunch', 'Dinner', 'Snack']}
+              value={form.meal}
+              onChange={(v) => handleChange('meal', v)}
+            />
             <TouchableOpacity style={authStyles.button} onPress={handleAdd}>
               <Text style={authStyles.buttonText}>Add</Text>
             </TouchableOpacity>
@@ -311,8 +303,5 @@ export default function NutritionScreen() {
       </Modal>
     </View>
   )
-}
-function calculateProteinGoal(arg0: UserProfile): React.SetStateAction<number | null> {
-  throw new Error('Function not implemented.')
 }
 
