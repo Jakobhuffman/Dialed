@@ -1,8 +1,8 @@
 // app/(onboarding)/user_profile.tsx
-import { Picker } from '@react-native-picker/picker'
+import Dropdown from '../../components/Dropdown'
 import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TextInput, TouchableOpacity } from 'react-native'
 import { saveUserProfile } from '../../lib/storage'
 import authStyles from '../../styles/auth.styles'
 
@@ -31,48 +31,32 @@ export default function UserProfile() {
       <TextInput style={authStyles.input} placeholder="Height (inches)" placeholderTextColor="#aaa" keyboardType="numeric" value={height} onChangeText={setHeight} />
       <TextInput style={authStyles.input} placeholder="Weight (lbs)" placeholderTextColor="#aaa" keyboardType="numeric" value={weight} onChangeText={setWeight} />
 
-      <Text style={authStyles.label}>Sex</Text>
-      <View style={authStyles.pickerWrapper}>
-        <Picker
-          selectedValue={sex}
-          onValueChange={(itemValue) => setSex(itemValue)}
-          style={authStyles.picker}
-          itemStyle={{ color: '#fff' }}
-          dropdownIconColor="#39FF14"
-        >
-          <Picker.Item label="Male" value="Male" />
-          <Picker.Item label="Female" value="Female" />
-          <Picker.Item label="Other" value="Other" />
-        </Picker>
-      </View>
+      <Dropdown
+        label="Sex"
+        options={["Male", "Female", "Other"]}
+        value={sex}
+        onChange={setSex}
+      />
 
-      <Text style={authStyles.label}>Activity Level</Text>
-      <View style={authStyles.pickerWrapper}>
-        <Picker
-          selectedValue={activity}
-          onValueChange={(itemValue) => setActivity(itemValue)}
-          style={authStyles.picker}
-        >
-          <Picker.Item label="Sedentary" value="Sedentary" />
-          <Picker.Item label="Lightly Active" value="Lightly Active" />
-          <Picker.Item label="Moderately Active" value="Moderately Active" />
-          <Picker.Item label="Very Active" value="Very Active" />
-          <Picker.Item label="Super Active" value="Super Active" />
-        </Picker>
-      </View>
+      <Dropdown
+        label="Activity Level"
+        options={[
+          'Sedentary',
+          'Lightly Active',
+          'Moderately Active',
+          'Very Active',
+          'Super Active',
+        ]}
+        value={activity}
+        onChange={setActivity}
+      />
 
-      <Text style={authStyles.label}>Goal</Text>
-      <View style={authStyles.pickerWrapper}>
-        <Picker
-          selectedValue={goal}
-          onValueChange={(itemValue) => setGoal(itemValue)}
-          style={authStyles.picker}
-        >
-          <Picker.Item label="Lose Weight" value="Lose" />
-          <Picker.Item label="Maintain Weight" value="Maintain" />
-          <Picker.Item label="Gain Weight" value="Gain" />
-        </Picker>
-      </View>
+      <Dropdown
+        label="Goal"
+        options={['Lose', 'Maintain', 'Gain']}
+        value={goal}
+        onChange={setGoal}
+      />
 
      <TouchableOpacity style={authStyles.button} onPress={handleSubmit}>
             <Text style={authStyles.buttonText}>Login</Text>
