@@ -16,8 +16,8 @@ import { Ionicons } from '@expo/vector-icons'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { useFocusEffect } from '@react-navigation/native'
 import { loadUserProfile } from '../../lib/storage'
-import { calculateCalorieGoal, UserProfile } from '../../lib/calorie'
-import { getTodaysCalories } from '../../lib/food'
+import { calculateCalorieGoal, calculateProteinGoal, UserProfile } from '../../lib/calorie'
+import { getTodaysCalories, getTodaysProtein } from '../../lib/food'
 import authStyles from '../../styles/auth.styles'
 
 export default function HomeScreen() {
@@ -34,6 +34,8 @@ export default function HomeScreen() {
   const [deadline, setDeadline] = useState<Date | undefined>()
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [caloriesEaten, setCaloriesEaten] = useState(0)
+  const [proteinEaten, setProteinEaten] = useState(0)
+  const [proteinGoal, setProteinGoal] = useState<number | null>(null)
   const [waterCount, setWaterCount] = useState(0)
 
   useFocusEffect(
@@ -42,9 +44,12 @@ export default function HomeScreen() {
         const profile = await loadUserProfile()
         if (profile) {
           setUserProfile(profile)
+          setProteinGoal(calculateProteinGoal(profile))
         }
         const eaten = await getTodaysCalories()
         setCaloriesEaten(eaten)
+        const protein = await getTodaysProtein()
+        setProteinEaten(protein)
       }
       fetchProfile()
     }, [])
@@ -60,6 +65,9 @@ export default function HomeScreen() {
     : 2000
   const fillPercent = calorieGoal
     ? Math.min(100, (caloriesEaten / calorieGoal) * 100)
+    : 0
+  const proteinFill = proteinGoal
+    ? Math.min(100, (proteinEaten / proteinGoal) * 100)
     : 0
 
   const toggleGoal = (id: string) => {
@@ -149,6 +157,27 @@ export default function HomeScreen() {
                 )}
               </AnimatedCircularProgress>
             </View>
+
+            {proteinGoal !== null && (
+              <View style={authStyles.ringCard}>
+                <AnimatedCircularProgress
+                  size={150}
+                  width={12}
+                  fill={proteinFill}
+                  tintColor="#F5054F"
+                  backgroundColor="#2C2C2C"
+                  lineCap="round"
+                  rotation={0}
+                  duration={1000}
+                >
+                  {() => (
+                    <Text style={authStyles.progressText}>
+                      {proteinEaten} / {proteinGoal} g
+                    </Text>
+                  )}
+                </AnimatedCircularProgress>
+              </View>
+            )}
 
             <View style={authStyles.sectionBox}>
               <Text style={authStyles.miniGoalTitle}>Today&apos;s Goals</Text>
