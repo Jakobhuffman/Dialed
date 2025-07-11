@@ -50,5 +50,5 @@ export const calculateCalorieGoal = (profile: UserProfile): number => {
 
 export const calculateProteinGoal = (profile: UserProfile): number => {
   const weightLb = parseFloat(profile.weight)
-  return Math.round(weightLb * 0.8)
+  return Math.round(weightLb * 1)
 }
